@@ -34,4 +34,4 @@ build/
 
 ### Archivos de configuración con credenciales ###
 application.properties
-application-prod.properties
+
