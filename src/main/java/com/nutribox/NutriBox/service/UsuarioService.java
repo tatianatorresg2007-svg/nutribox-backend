@@ -21,15 +21,19 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
     }
 
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
     public Usuario registrar(Usuario usuario) {
-        // Evita registrar dos veces el mismo email
         usuarioRepository.findByEmail(usuario.getEmail()).ifPresent(u -> {
             throw new RuntimeException("Ya existe un usuario registrado con ese email");
         });
 
         if (usuario.getRol() == null) {
-            usuario.setRol(Usuario.RolUsuario.CLIENTE); // por defecto, nadie se auto-asigna ADMIN
+            usuario.setRol(Usuario.RolUsuario.CLIENTE);
         }
+
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
         return usuarioRepository.save(usuario);
     }
