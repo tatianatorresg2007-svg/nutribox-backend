@@ -45,9 +45,8 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/planes/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/pedidos").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/pedidos/**").hasRole("ADMIN")
-                        .requestMatchers("/api/pedidos/usuario/**").hasRole("ADMIN")
-                        .requestMatchers("/api/suscripciones/usuario/**").hasRole("ADMIN")
-
+                        .requestMatchers("/api/pedidos/usuario/**").authenticated()
+                        .requestMatchers("/api/suscripciones/usuario/**").authenticated()
                         // requiere estar logueado (CLIENTE o ADMIN)
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/pedidos/**").authenticated()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/suscripciones/**").authenticated()

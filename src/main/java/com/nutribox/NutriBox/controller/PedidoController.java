@@ -20,9 +20,22 @@ public class PedidoController {
         return pedidoService.listarTodos();
     }
 
+    @Autowired
+    private com.nutribox.NutriBox.repository.UsuarioRepository usuarioRepository;
+
     @GetMapping("/usuario/{usuarioId}")
-    public List<Pedido> listarPorUsuario(@PathVariable Long usuarioId) {
-        return pedidoService.listarPorUsuario(usuarioId);
+    public ResponseEntity<?> listarPorUsuario(@PathVariable Long usuarioId) {
+        var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        boolean esAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!esAdmin) {
+            var usuarioActual = usuarioRepository.findByEmail(auth.getName()).orElse(null);
+            if (usuarioActual == null || !usuarioActual.getId().equals(usuarioId)) {
+                return ResponseEntity.status(403).body("No tienes permiso para ver estos pedidos");
+            }
+        }
+
+        return ResponseEntity.ok(pedidoService.listarPorUsuario(usuarioId));
     }
 
     @GetMapping("/{id}")
